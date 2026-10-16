@@ -111,9 +111,9 @@ to the delivery loudness with the voice clear on every line (`voice_margin.py`, 
 
 ## Step 5: finish and deliver
 
-Encode with colour tags, mux, make the 9:16 cut if asked, and verify frame count, duration, loudness and true peak on
-the delivered file, not the intermediate. `references/finish.md`. Never overwrite a version the user has seen: every
-change is a new version number.
+Encode with colour tags (a fine film grain on the frames first, if the film wants one), mux, make the 9:16 cut if
+asked, and verify frame count, duration, loudness and true peak on the delivered file, not the intermediate.
+`references/finish.md`. Never overwrite a version the user has seen: every change is a new version number.
 
 ## Step 6: review and raise the quality
 
@@ -145,13 +145,14 @@ as a separate pass, and say which.
 | `references/env.md` | the `.env` contract: providers and their variables, how to ask, cost, generated media |
 | `references/craft.md` | drawing in code: the render contract, determinism, materials, colour, motion, flicker, the quality bar |
 | `references/sound.md` | voiceover, music, foley, the mix command, loudness, voice margins |
-| `references/finish.md` | encoding with colour tags, masters, mux, 9:16, verification, versions |
+| `references/finish.md` | encoding with colour tags, film grain, masters, mux, 9:16, verification, versions |
 | `references/review.md` | judge, adversarial reviewer, grading panel (roles, lenses, files, grade template, loop, lessons) |
 | `scripts/doctor.py` | dependency check with per-OS install commands |
 | `scripts/check_env.py` | which `.env` variables are set (never prints values) |
 | `scripts/render_frames.mjs` | export frames or stills from a page that follows the render contract |
 | `scripts/sheet.py` | numbered contact sheet from frames or stills |
 | `scripts/flicker.py` | flicker and shimmer per tile and per pixel, at 1s and 2s, and old against new |
+| `scripts/grain.py` | fine film grain on exported frames: luma only, by tone, one grain per drawing, deterministic |
 | `scripts/voice_track.py` | lay the voice lines onto one track from `lines.json` |
 | `scripts/levels.py` | RMS over time for several files side by side (ducking, the music's tail) |
 | `scripts/loudness.py` | integrated loudness and true peak of a file; two-pass normalisation |

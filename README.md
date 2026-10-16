@@ -47,8 +47,8 @@ call it tells you what it will cost and waits for your OK.
 
 - `SKILL.md`: the method, step by step.
 - `references/`: setup per OS, keys and providers, drawing in code, sound, finishing, and reviews.
-- `scripts/`: the frame renderer, a dependency check, a contact sheet, flicker, loudness and voice-margin
-  measurements, and a tool that freezes a version for grading.
+- `scripts/`: the frame renderer, a dependency check, a contact sheet, a fine film grain, flicker, loudness and
+  voice-margin measurements, and a tool that freezes a version for grading.
 - `assets/`: a starter page that follows the render contract, and the `.env` template (`env.example`).
 
 To see the starter, open `assets/starter/index.html` in a browser; it plays in a loop.

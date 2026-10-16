@@ -110,7 +110,7 @@ Intended grain or boil scores too, so judge a change by comparing against the pr
 | "it's flickering" | thin lines or boil aliasing, a weave in the grade | supersample thin work, no boil on geometric edges, no grade weave |
 | "the background looks digital" | vector decoration around the subject | paint ground and subject as one picture |
 | "it looks like a sticker" | a shadow under something drawn into its ground, a hard rim light | shadows only where things stand proud |
-| "pixelated / blotchy" | coarse grain, 8-bit grading, heavy compression in dark areas | grade in 16-bit, light grain, a lower CRF for dark films |
+| "pixelated / blotchy" | coarse grain, 8-bit grading, heavy compression in dark areas | grade in 16-bit, fine grain (`grain.py`) encoded at CRF 23 or lower with `-tune grain`, a lower CRF for dark films |
 | "a stripe at the edge" | a camera move bared the page | overscan matched to the move, check all four edges |
 | "the music is too low" / "the effects are too loud" | first-guess levels | measure: music clearly under the voice, effects well under the music |
 | "too much reverb on the voice" | any reverb on narration | a dry voice chain |

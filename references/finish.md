@@ -16,8 +16,44 @@ ffmpeg -framerate 24 -i .work/v1/frames/f%04d.png -vf "scale=out_color_matrix=bt
   ```
   ffmpeg -framerate 24 -i .work/v1/frames/f%04d.png -vf "scale=out_color_matrix=bt709:out_range=tv,format=yuv422p10le,setparams=range=tv:colorspace=bt709:color_primaries=bt709:color_trc=bt709" -c:v prores_ks -profile:v 3 -colorspace bt709 -color_primaries bt709 -color_trc bt709 .work/v1/master.mov
   ```
-- Grade, if any, in 16-bit, on the frames, before the 8-bit encode. Light grain at most; no weave or shake in the grade.
+- Grade, if any, in 16-bit, on the frames, before the 8-bit encode. Light grain at most (below); no weave or shake in
+  the grade.
 - In a Windows `.bat` file, `%04d` must be written `%%04d`; in PowerShell and bash it is fine as is.
+
+## Film grain (optional, before the encode)
+
+A fine grain makes a drawn film read as printed rather than rendered, and it dithers smooth gradients so they do not
+band in 8 bits. Done badly it is the "pixelated / blotchy" note: coarse grain, or grain the encoder turns into blocks.
+`grain.py` adds it to the exported frames; then encode those frames instead, with `-tune grain`:
+
+```
+uv run <skill>/scripts/grain.py .work/v1/frames .work/v1/grain
+ffmpeg -framerate 24 -i .work/v1/grain/f%04d.png -vf "scale=out_color_matrix=bt709:out_range=tv,format=yuv420p,setparams=range=tv:colorspace=bt709:color_primaries=bt709:color_trc=bt709" -c:v libx264 -preset slow -crf 23 -tune grain -colorspace bt709 -color_primaries bt709 -color_trc bt709 -movflags +faststart .work/v1/picture.mp4
+```
+
+- The grain is luma only (hue and saturation stay; nothing lands on the colour planes, which 4:2:0 halves into
+  blotches), fine (about 0.8 px, with nothing left at blotch scale), zero-mean (region means do not move), weaker in
+  deep shadows and near white, and seeded by the drawing, so a re-run gives the same pixels.
+- `--amount` is the grain's std in 8-bit code values in the midtones: 2.8 (the default) is subtle but visible at 1:1
+  and on a phone; 4 and up reads as noise. `--size 0.8` suits a 1080 px film; scale it with the width. `--on 2` (the
+  default) gives each drawing of a film on 2s one grain, so a held pair stays identical; `--on 1` gives every frame a
+  new one.
+- Keep the encode at CRF 23 or lower, with `-tune grain`. Measured on a 1080 px film on 2s: above that, x264 turns the
+  grain into block-sized mottle that flickers (24 px tile flicker, grained against clean at the same settings: 1.0x at
+  CRF 23, 1.1x at 24, 1.4x at 26; 1.1-1.3x at CRF 24 without `-tune grain`). Grain costs bitrate: that film took
+  8.4 Mbit/s at CRF 23 with grain, 3.6 Mbit/s at CRF 24 without.
+- Every re-encode removes grain. Build the 9:16 from `.work/v1/grain` with the same `-crf 23 -tune grain`, never from
+  an mp4. A messaging app re-encodes again and keeps about half of it (simulated: 720 px, 1.5 Mbit/s); a file sent as
+  a document is not re-encoded.
+- Check that it adds no flicker, on a nearly still stretch (the fine scale rises by design):
+  `uv run <skill>/scripts/flicker.py .work/v1/frames 2.5 3.5 --vs .work/v1/grain`
+  On a film with its own texture the tile ratio stays at or under 1.1x. On flat colour the base is near zero, so the
+  ratio can read high on a change of a few hundredths of a code value: there, check that the tile max (the worst
+  single flip) is unchanged.
+  For the delivered file, decode both encodes to frames (`ffmpeg -i <file>.mp4 -vf "scale=in_color_matrix=bt709:in_range=tv:flags=accurate_rnd+full_chroma_int,format=rgb24" -start_number 0 <dir>/f%04d.png`)
+  and compare those the same way.
+- Not grain: a weave or shake, a flickering exposure, halation (a camera's glow around light sources, foreign to a
+  drawn film), or a second vignette over a film that already has one.
 
 ## Mux
 
