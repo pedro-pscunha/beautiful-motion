@@ -33,7 +33,7 @@ Notes:
   `. "$NVM_DIR/nvm.sh"` (or `export NVM_DIR="$HOME/.nvm"; . "$NVM_DIR/nvm.sh"`) before `node` and `npx`.
 - Windows:
   - Add `--accept-source-agreements --accept-package-agreements` to every winget call an agent runs, or the first
-    run waits for a Y/N. Node, Python and Blender bring up a UAC prompt: tell the user before.
+    run waits for a Y/N. Node and Python bring up a UAC prompt: tell the user before.
   - Open a new terminal after a winget install, so PATH refreshes. If `winget` is missing, the user installs "App
     Installer" from the Microsoft Store.
   - Windows PowerShell 5.1 (the default) has no `&&`: run one command per line.
@@ -51,14 +51,8 @@ Notes:
 
 | Tool | When | Install |
 |---|---|---|
-| Blender 5.x | real 3D: path-traced objects, a camera move through a set | macOS `brew install --cask blender`; Windows `winget install -e --id BlenderFoundation.Blender`; Linux `sudo snap install blender --classic`, `flatpak install flathub org.blender.Blender`, or the tarball from blender.org |
 | Fonts | type in the film | download from Google Fonts or the foundry, keep the file in the project, and load it in the page with `@font-face` (the render then does not depend on the machine) |
 | A DAW or audio editor | the user wants to fine-tune the mix by hand | their choice (Reaper, Audacity, Logic); hand over stems as WAV |
-
-Blender is not on PATH after install on macOS (`/Applications/Blender.app/Contents/MacOS/Blender`) or Windows
-(`C:\Program Files\Blender Foundation\Blender 5.x\blender.exe`). Render a PNG sequence at the film's size and fps,
-headless, numbered from 0 like the page's frames: `blender -b scene.blend -o //render/f#### -F PNG -s 0 -e <last frame> -a`. Then draw those frames in the page as a plate by frame
-index (`craft.md`, "Plates").
 
 ## Verify
 

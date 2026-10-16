@@ -39,6 +39,9 @@ you through installing it. Then it asks about the film and about the resources y
 - generated images for textures or backdrops: Higgsfield, OpenAI, Google, fal or Replicate; by default everything is
   drawn in code.
 
+By default the agent colours each shot with one combination from Sanzo Wada's *A Dictionary of Color Combinations*
+(348 combinations from his 1933-34 colour books), read from an open dataset.
+
 With no paid service at all you still get a complete film. When a step needs an API key, the agent asks you to put it
 in a `.env` file in your project; it never asks for keys in the chat and never prints them. Before the first paid
 call it tells you what it will cost and waits for your OK.
@@ -46,9 +49,12 @@ call it tells you what it will cost and waits for your OK.
 ## What is inside
 
 - `SKILL.md`: the method, step by step.
-- `references/`: setup per OS, keys and providers, drawing in code, sound, finishing, and reviews.
-- `scripts/`: the frame renderer, a dependency check, a contact sheet, a fine film grain, flicker, loudness and
-  voice-margin measurements, and a tool that freezes a version for grading.
+- `references/`: setup per OS, keys and providers, the colour book (Sanzo Wada's combinations and how to pick them),
+  the drawing and animation techniques (chalk, woodcut, stamp, stained glass, mosaic, embroidery, knitting, string art,
+  watercolour and more; build then live, one clock, soak transitions), the render contract, sound, finishing, and
+  reviews.
+- `scripts/`: the frame renderer, a dependency check, a Wada colour picker, a contact sheet, a fine film grain,
+  flicker, loudness and voice-margin measurements, and a tool that freezes a version for grading.
 - `assets/`: a starter page that follows the render contract, and the `.env` template (`env.example`).
 
 To see the starter, open `assets/starter/index.html` in a browser; it plays in a loop.

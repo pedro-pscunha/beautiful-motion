@@ -5,6 +5,22 @@ never read `.env`. Give every critic absolute paths, the brief, the user's own n
 exact shape of its answer. If you cannot spawn subagents, run each critic as a fresh session that reads only the
 files, or do the review yourself as a separate pass, and say which.
 
+## The quality bar (notes a director gives, and what they usually mean)
+
+| Note | What it meant | Fix |
+|---|---|---|
+| "this is still" | a shot held a finished image | build in the medium's idiom, then a slow continuous life (`techniques.md`) |
+| "it's flickering" | thin lines or boil aliasing, a weave in the grade | supersample thin work, no boil on geometric edges, no grade weave |
+| "the background looks digital" | vector decoration around the subject | paint ground and subject as one picture |
+| "it looks like a sticker" | a shadow under something drawn into its ground, a hard rim light | shadows only where things stand proud |
+| "the colours look random" | palettes picked shot by shot, or a hue from outside the shot's combination | one Wada combination per shot, nothing outside it but neutrals (`colour.md`) |
+| "pixelated / blotchy" | coarse grain, 8-bit grading, heavy compression in dark areas | grade in 16-bit, fine grain (`grain.py`) encoded at CRF 23 or lower with `-tune grain`, a lower CRF for dark films |
+| "a stripe at the edge" | a camera move bared the page | overscan matched to the move, check all four edges |
+| "the music is too low" / "the effects are too loud" | first-guess levels | measure: music clearly under the voice, effects well under the music |
+| "too much reverb on the voice" | any reverb on narration | a dry voice chain |
+| "the line plays over the next image" | a long line pushed later lines off their shots | one short line per shot, placed on its own image |
+| "don't exaggerate" | effects added for their own sake | restraint: fewer notes, softer, truer to the medium |
+
 ## Judge (one opinion on a finished cut)
 
 One read-only critic. It extracts frames, measures the audio, says what it could not check, and returns

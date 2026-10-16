@@ -1,4 +1,4 @@
-# Craft: drawing a film in code
+# Craft: the render contract
 
 ## The render contract
 
@@ -25,8 +25,6 @@ what lets you re-render one shot, compare two versions frame by frame, and splic
   cmp .work/cold1/f0100.png .work/cold2/f0100.png && cmp .work/cold1/f0100.png .work/v1/frames/f0100.png
   ```
   (Windows: `fc.exe /b a b`.) All three must be identical.
-- Time: step on 2s (a new drawing every 2 frames at 24 fps) for a hand-made feel; keep one global clock for anything
-  that must match across cuts (a rotation, a light drift).
 - Text in the frame is real type: a font file in the project, declared with `@font-face`. The renderer loads every
   declared face before the first frame. Never let a generator draw letters.
 - No network during a render: fonts, images and data are local files next to the page (the renderer allows the page
@@ -46,7 +44,7 @@ time). Copy it to start. Its sizes follow `W` and `H`, so a 9:16 film starts wit
 ## Plates
 
 A plate is an image or an image sequence drawn under or over the code-drawn work: a generated texture, a scanned
-paper, a photo, frames rendered in Blender, frames of the user's own footage (extract them at the film's fps and size into a folder you create first,
+paper, a photo, frames of the user's own footage (extract them at the film's fps and size into a folder you create first,
 `mkdir -p plates/footage`, then
 `ffmpeg -i footage.mp4 -vf "fps=24,scale=1080:1080:force_original_aspect_ratio=increase,crop=1080:1080,scale=in_color_matrix=bt709:in_range=tv,format=rgb24" -start_number 0 plates/footage/f%04d.png`,
 with the film's fps and size; it fills the frame without stretching, and ffmpeg numbers from 1 unless told).
@@ -61,64 +59,15 @@ window.renderFrame = async (t, c) => { const f = Math.round(t * TIMELINE.fps); c
 Prefer an image sequence to a `<video>` element: seeking a video is not frame-exact in every browser, and frames keep
 the film on one clock.
 
-## Look
-
-- One palette per shot, from a real source: a colour dictionary (Sanzo Wada's combinations are a good one), a painting,
-  a print tradition. Write the hexes in the code with their source. Judge the palette ON the material, not as swatches:
-  the same colours read differently as chalk, glass or wool.
-- The subject reads first, at phone size (390 px wide). Check every frame as a phone-size contact sheet
-  (`sheet.py --cell 390`).
-- Ground and subject are one picture: shared pigments and light, asymmetric, organic. A clean subject on a decorative
-  ground reads as a sticker.
-- Materials need their own physics. For example: chalk has tooth along the stroke; a woodcut has the cut and the ink's
-  salt; stained glass has leading and pieces a glazier could cut; a stamp prints uneven with a pooled rim; thread has
-  strands and a sheen. If a material reads digital at 1:1, find the tell (a flat fill, a perfect circle, one texture
-  stamped many times, a Voronoi diagram, a vector edge) and draw it the way the material is made.
-- A drop shadow under something drawn INTO its ground (ink, paint, chalk, stitches, glass) reads as a sticker. Cast
-  shadows only from things that stand proud.
-
-## Motion
-
-- Every shot builds itself in its own idiom, then lives. No shot holds a finished, frozen image for its whole length.
-- Life in a hold is slow and continuous: a turn of a degree or two, a drifting light band (it must move the paper by a
-  few grey levels to be seen), a camera breath of a few pixels with a matching overscan so no edge is ever bared.
-- Cuts land on the beat of the music when there is music (measure the beats; do not guess).
-- A transition that turns one material into another (paper spreading, ink soaking) is softer than a hard cut, and
-  better than a crossfade, which passes through a muddy middle. A hard cut needs a strong value change or a match
-  (the same silhouette in the same place).
-- Pacing: give a shot the time its line needs; a voice line plays over its own image, never spilling onto the next.
-
-## Flicker and shimmer
-
-Most "it flickers" notes are aliasing, not animation:
-- thin lines (under ~1.5 px) that turn or move crawl; draw them at 2-4x into an offscreen canvas and scale down;
-- a hand-drawn boil (re-jittering an outline every drawing) on a hard geometric edge reads as flicker; keep boil off
-  geometric outlines;
-- fine high-contrast textures (a pixel checker, a dither) shimmer when they move; supersample them;
-- never add a weave or shake in the final grade; if a plate needs a weave, apply it to that plate only, sub-pixel.
-
-Measure it: `uv run <skill>/scripts/flicker.py <frames> <t0> <t1> [--vs <older frames>]`. It scores reversals (a
-move goes one way; a flicker goes back and forth) per 24 px tile and per pixel, at every frame and every other frame.
-Intended grain or boil scores too, so judge a change by comparing against the previous export of the same window
-(`--vs`), not against zero. You cannot see flicker in stills.
-
-## The quality bar (notes a director gives, and what they usually mean)
-
-| Note | What it meant | Fix |
-|---|---|---|
-| "this is still" | a shot held a finished image | build in the medium's idiom, then a slow continuous life |
-| "it's flickering" | thin lines or boil aliasing, a weave in the grade | supersample thin work, no boil on geometric edges, no grade weave |
-| "the background looks digital" | vector decoration around the subject | paint ground and subject as one picture |
-| "it looks like a sticker" | a shadow under something drawn into its ground, a hard rim light | shadows only where things stand proud |
-| "pixelated / blotchy" | coarse grain, 8-bit grading, heavy compression in dark areas | grade in 16-bit, fine grain (`grain.py`) encoded at CRF 23 or lower with `-tune grain`, a lower CRF for dark films |
-| "a stripe at the edge" | a camera move bared the page | overscan matched to the move, check all four edges |
-| "the music is too low" / "the effects are too loud" | first-guess levels | measure: music clearly under the voice, effects well under the music |
-| "too much reverb on the voice" | any reverb on narration | a dry voice chain |
-| "the line plays over the next image" | a long line pushed later lines off their shots | one short line per shot, placed on its own image |
-| "don't exaggerate" | effects added for their own sake | restraint: fewer notes, softer, truer to the medium |
-
-## Generated media in a coded film
-
 Use generated images for what code cannot do well (a photographic texture, a painted backdrop), and keep motion, type
-and composition in code. Bring a generated image in as a plate (above) and animate over it. No generated video: the
-motion is the code's. Keys, providers and asset records: `env.md`.
+and composition in code: bring a generated image in as a plate and animate over it. No generated video: the motion is
+the code's. Keys, providers and asset records: `env.md`.
+
+## Where the rest is
+
+- Colour: `colour.md`. Sanzo Wada's combinations by default, one per shot, picked with `scripts/wada.py` and judged
+  on the material.
+- Drawing each material, the motion (build then live, one clock for turns, the camera breath, timing to the music,
+  soak transitions, the many-into-one ending, stepping on 2s and flicker), the finish on the canvas, and the traps:
+  `techniques.md`.
+- The quality bar (the notes a director gives, what they usually mean, and the fix): `review.md`.

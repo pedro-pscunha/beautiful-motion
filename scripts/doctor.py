@@ -5,10 +5,8 @@
 # ///
 """Check the tools beautiful-motion needs and print, for this machine, the command that installs each missing one.
 Installs nothing itself. Run it with the project folder as the working directory (Playwright is a project dependency):
-    uv run <skill>/scripts/doctor.py [--optional]        (without uv: python3, or py on Windows)
---optional also checks Blender. Exit 1 if a required tool is missing."""
-import glob
-import os
+    uv run <skill>/scripts/doctor.py        (without uv: python3, or py on Windows)
+Exit 1 if a required tool is missing."""
 import platform
 import re
 import shutil
@@ -52,9 +50,6 @@ INSTALL = {
                        + ('\nsudo env "PATH=$PATH" npx playwright install-deps chromium   (the user runs it, if Chromium still does not launch)'
                           if k == 'apt' else ''))
                    for k in ('mac', 'win', 'apt', 'dnf', 'pacman', 'linux')},
-    'blender': {'mac': 'brew install --cask blender', 'win': 'winget install -e --id BlenderFoundation.Blender' + W,
-                **{k: 'sudo snap install blender --classic, or flatpak install flathub org.blender.Blender, '
-                      'or the tarball from https://www.blender.org/download/' for k in ('apt', 'dnf', 'pacman', 'linux')}},
 }
 
 
@@ -107,12 +102,6 @@ try:
 except ImportError:
     ok &= report('Pillow + numpy', has_uv, 'uv run installs them per script' if has_uv
                  else 'not importable and no uv: install uv, or  python -m pip install pillow numpy', 'uv')
-if '--optional' in sys.argv:
-    found = shutil.which('blender') or next(iter(
-        glob.glob('/Applications/Blender.app/Contents/MacOS/Blender') if OS == 'mac' else
-        sorted(glob.glob(os.path.join(os.environ.get('ProgramFiles', r'C:\Program Files'), 'Blender Foundation',
-                                      'Blender*', 'blender.exe')), reverse=True) if OS == 'win' else []), None)
-    report('Blender (optional)', bool(found), found or 'not found', 'blender')
 print('\nAll required tools present.' if ok else
       '\nSome required tools are missing: install them (ask the user for anything with a password, UAC or GUI prompt),'
       ' then run this again.')

@@ -1,6 +1,6 @@
 ---
 name: beautiful-motion
-description: Make, fix or grade short motion films that look hand-made and professionally finished - an animated film, a motion piece, an explainer, a social reel (9:16), a title or end card, an animated poem, a catalogue of styles. Use it whenever someone wants a film animated, made "more beautiful / less AI-looking", re-rendered, de-flickered, re-mixed, critiqued or graded, even if they never say "motion". The picture and its motion are drawn in code (an HTML canvas exported frame by frame with Playwright), with the resources the user picks at the start - optional generated images (Higgsfield or another provider), voiceover, music (ElevenLabs, Higgsfield, Suno or their own) and sparse foley - then finished with ffmpeg to delivery specs and raised by subagent reviews or a grading panel.
+description: Make, fix or grade short motion films that look hand-made and professionally finished - an animated film, a motion piece, an explainer, a social reel (9:16), a title or end card, an animated poem, a catalogue of styles. Use it whenever someone wants a film animated, made "more beautiful / less AI-looking", re-rendered, de-flickered, re-mixed, critiqued or graded, even if they never say "motion". The picture and its motion are drawn in code (an HTML canvas exported frame by frame with Playwright), each shot a material (chalk, woodcut, glass, wool) coloured from one combination of Sanzo Wada's A Dictionary of Color Combinations, with the resources the user picks at the start - optional generated images (Higgsfield or another provider), voiceover, music (ElevenLabs, Higgsfield, Suno or their own) and sparse foley - then finished with ffmpeg to delivery specs and raised by subagent reviews or a grading panel.
 ---
 
 # beautiful-motion
@@ -64,6 +64,10 @@ network access: ask the user to allow them. Per OS: `references/setup.md`.
 Ask only what changes the work: length and format (16:9, 1:1, 9:16), where it will be seen (phone, screen, festival),
 the subject and the tone, words (a voiceover? on-screen text?), references they love and hate.
 
+Propose the look from Sanzo Wada's *A Dictionary of Color Combinations*: two or three of its combinations for the
+film's mood, by number and with their colour names (`scripts/wada.py`, `references/colour.md`). They are the starting
+point the stills will test.
+
 Then, before starting, ask which resources they want to use, one answer per line ("none" is an answer):
 - **Music**: their own or a licensed track; a royalty-free library (Pixabay Music, the YouTube Audio Library, Freesound
   CC0); generated with ElevenLabs Music (v2: a whole piece built section by section, and one section regenerated
@@ -82,8 +86,12 @@ or silence.
 
 ## Step 2: look first, then motion
 
-1. Pick the look and a palette from a real source (a colour dictionary such as Sanzo Wada's, a painting, a print
-   tradition), not generic "vibrant". Name the materials: chalk, woodcut, felt, glass, paper.
+1. Colour every shot from Sanzo Wada's *A Dictionary of Color Combinations* (Seigensha's 348 numbered combinations
+   from his 1933-34 *Haishoku Sōkan*), by default: one combination per shot, never repeated in the film, nothing in a shot from
+   outside it but neutrals. It gives the film one coherent, tested family of colours instead of ad-hoc picks. Filter
+   with `scripts/wada.py`, judge the candidates on the material, and write the number in the code
+   (`references/colour.md`). Use another source (a painting, a brand palette) only when the brief or the user asks.
+   Name the materials: chalk, woodcut, felt, glass, paper.
 2. Build stills first: one frame per shot at full size, shown as a numbered contact sheet. One still per shot, then
    the sheet (here for two shots, at 1.5 s and 4.5 s):
    ```
@@ -95,7 +103,8 @@ or silence.
 3. Only then animate. Each shot builds itself in its own idiom (the chalk draws, the woodcut is cut, the paper folds),
    then lives (a slow turn, a light that drifts, a camera breath). A shot that holds a finished image reads as "still".
 
-How to draw in code, the render contract and the traps: `references/craft.md`.
+How to draw each material, build it, keep it alive, cut between materials and finish the canvas, with the traps:
+`references/techniques.md`. The page's render contract: `references/craft.md`.
 
 ## Step 3: render
 
@@ -141,18 +150,21 @@ as a separate pass, and say which.
 
 | Path | What |
 |---|---|
-| `references/setup.md` | installing uv, Node, ffmpeg, Playwright, optional Blender and fonts on macOS, Windows, Linux, with the user |
+| `references/setup.md` | installing uv, Node, ffmpeg, Playwright and fonts on macOS, Windows, Linux, with the user |
 | `references/env.md` | the `.env` contract: providers and their variables, how to ask, cost, generated media |
-| `references/craft.md` | drawing in code: the render contract, determinism, materials, colour, motion, flicker, the quality bar |
+| `references/colour.md` | Sanzo Wada's colour book as the default palette: the book, the open data, the rules, picking, worked examples |
+| `references/techniques.md` | each material drawn in code, motion (build then live, one clock, camera breath, music, soaks, the ending, on 2s, flicker), the canvas finish, traps |
+| `references/craft.md` | the render contract: the page's globals, determinism, caches, fonts, plates |
 | `references/sound.md` | voiceover, music, foley, the mix command, loudness, voice margins |
 | `references/finish.md` | encoding with colour tags, film grain, masters, mux, 9:16, verification, versions |
-| `references/review.md` | judge, adversarial reviewer, grading panel (roles, lenses, files, grade template, loop, lessons) |
+| `references/review.md` | the quality bar; judge, adversarial reviewer, grading panel (roles, lenses, files, grade template, loop, lessons) |
 | `scripts/doctor.py` | dependency check with per-OS install commands |
+| `scripts/wada.py` | Wada's 348 combinations from the open data: show one by number, filter by hue, warm/cool, earth, dark, count |
 | `scripts/check_env.py` | which `.env` variables are set (never prints values) |
 | `scripts/render_frames.mjs` | export frames or stills from a page that follows the render contract |
 | `scripts/sheet.py` | numbered contact sheet from frames or stills |
 | `scripts/flicker.py` | flicker and shimmer per tile and per pixel, at 1s and 2s, and old against new |
-| `scripts/grain.py` | fine film grain on exported frames: luma only, by tone, one grain per drawing, deterministic |
+| `scripts/grain.py` | fine film grain on exported frames, or on raw 16-bit frames streamed through it (`--raw`): luma only, by tone, one grain per drawing, deterministic |
 | `scripts/voice_track.py` | lay the voice lines onto one track from `lines.json` |
 | `scripts/levels.py` | RMS over time for several files side by side (ducking, the music's tail) |
 | `scripts/loudness.py` | integrated loudness and true peak of a file; two-pass normalisation |

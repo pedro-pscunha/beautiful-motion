@@ -35,9 +35,14 @@ ffmpeg -framerate 24 -i .work/v1/grain/f%04d.png -vf "scale=out_color_matrix=bt7
   blotches), fine (about 0.8 px, with nothing left at blotch scale), zero-mean (region means do not move), weaker in
   deep shadows and near white, and seeded by the drawing, so a re-run gives the same pixels.
 - `--amount` is the grain's std in 8-bit code values in the midtones: 2.8 (the default) is subtle but visible at 1:1
-  and on a phone; 4 and up reads as noise. `--size 0.8` suits a 1080 px film; scale it with the width. `--on 2` (the
-  default) gives each drawing of a film on 2s one grain, so a held pair stays identical; `--on 1` gives every frame a
-  new one.
+  and on a phone; 4 and up reads as noise. `--size 0.8` suits a 1080 px film; scale it with the short side (0.8 for
+  1920x1080 too). `--on 2` (the default) gives each drawing of a film on 2s one grain, so a held pair stays identical;
+  `--on 1` gives every frame a new one.
+- A grade that runs in ffmpeg can stream its 16-bit frames through the grain instead of writing PNGs twice (about
+  4-9 MB a frame each time at 1080p): `--raw <W>x<H>` reads raw `rgb48le` frames on stdin and writes them grained to
+  stdout, in order, as in `ffmpeg … -f rawvideo -pix_fmt rgb48le - | uv run <skill>/scripts/grain.py --raw 1920x1080 --start 1 --on 1 | ffmpeg -f rawvideo -pix_fmt rgb48le -s 1920x1080 -framerate 30 -i - …`.
+  `--start` is the number of the first frame (the seed), so the pixels equal the folder mode's for frames with those
+  numbers.
 - Keep the encode at CRF 23 or lower, with `-tune grain`. Measured on a 1080 px film on 2s: above that, x264 turns the
   grain into block-sized mottle that flickers (24 px tile flicker, grained against clean at the same settings: 1.0x at
   CRF 23, 1.1x at 24, 1.4x at 26; 1.1-1.3x at CRF 24 without `-tune grain`). Grain costs bitrate: that film took
