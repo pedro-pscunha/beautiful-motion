@@ -52,3 +52,7 @@ call it tells you what it will cost and waits for your OK.
 - `assets/`: a starter page that follows the render contract, and the `.env` template (`env.example`).
 
 To see the starter, open `assets/starter/index.html` in a browser; it plays in a loop.
+
+## License
+
+MIT. See `LICENSE`.
