@@ -55,7 +55,10 @@ starting point for the look. The stills then test them on the material.
    hue), and only its material changes. Taken from each shot's combination instead, it went crimson in some shots and
    vermilion in others (hue 20-23 against 38-39), and read as different apples. Its highlights and shadows may use the
    shot's own colours.
-8. **A colour-dictionary plate is optional.** It shows "Wada nº 124" with its swatches, set like a page of the book.
+8. **A figure's clothes part from the ground they touch.** Green shorts on green grass read as part of the grass
+   (ΔE 7-14 measured). Give the garment another hue or lightness from the shot's combination, at ΔE 25 or more against
+   the ground beside it (33 and 47 measured, and the note did not come back), and measure it on the frame.
+9. **A colour-dictionary plate is optional.** It shows "Wada nº 124" with its swatches, set like a page of the book.
    Use it once, as an end card or in a closing grid. On every shot it reads as a caption over the picture.
 
 ## Picking: filter by numbers, then judge on the material

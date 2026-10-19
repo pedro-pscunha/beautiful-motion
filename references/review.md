@@ -21,7 +21,9 @@ files, or do the review yourself as a separate pass, and say which.
 | "the line plays over the next image" | a long line pushed later lines off their shots | one short line per shot, placed on its own image |
 | "it glitches sometimes" | one-frame pops: a stroke laid whole, a pose that snaps, a boil redrawn over a figure | `glitch_scan.py` on every export, strokes faded in behind the tip, feature swaps cut not dissolved (`techniques.md`) |
 | "the letters look disconnected from the background" | a font's outline with a texture inside, revealed by a wipe | the word laid stroke by stroke in its scene's own material, on the font's skeleton |
-| "the arm seems broken" / "it comes out of his hip" | a far arm behind the body in a three-quarter view, a hand with no forearm, a bare shoulder | the arm and hand traps in `techniques.md`, audited every frame |
+| "the arm seems broken" / "it comes out of his hip" | a far arm behind the body in a three-quarter view, a hand with no forearm, a bare shoulder, an arm swung round through the back after a throw | the two-handed toss and the arm and hand traps in `techniques.md`, audited every frame |
+| "his right arm" | the character's own right, on the screen's left when he faces us; read as the screen's right, the fix goes to the wrong arm | read the side off the annotated screenshot's callouts, and ask when the words and the drawing disagree |
+| "the hips seem part of the grass" | clothes of the ground's hue and lightness | clothes at ΔE 25 or more against the ground they touch (`colour.md`) |
 | "raise the volume before the voice" / "the dips are too intense" | an intro far under the voice; a dip cut into the music | lift the intro and ease it under; duck instead of dipping (`sound.md`) |
 | "don't exaggerate" | effects added for their own sake | restraint: fewer notes, softer, truer to the medium |
 

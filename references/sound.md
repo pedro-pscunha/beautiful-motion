@@ -65,7 +65,9 @@ which float keeps and normalisation brings down, where 16- or 24-bit would clip 
 
 ## Foley
 
-Sparse: a sound only where a hand works (the chalk scratch, the needle, the stamp). Real recordings beat generated
+Sparse: a sound only where a hand works (the chalk scratch, the needle, the stamp). A film about things that move (a
+children's explainer) also wants one where something falls, lands, is caught or jumps; a director asked for more of
+those, and for them loud enough to hear over the music (the level is in the mix below). Real recordings beat generated
 ones for realism; generated effects need cutting to the action and checking for clicks. Pitch nothing to the music's
 key unless you measured the key.
 

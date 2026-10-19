@@ -505,6 +505,10 @@ every drawing's scale, and say honestly what that g is (about 0.56 of real g at 
 a true fall, the scale is a convention. Time each toss so its apex lands exactly on the next cut, and key the catch
 and the landing to their words.
 
+An object that falls from something hangs from it first, where the viewer can see it: an apple by its stem from a
+branch that shows from the trunk out (open the crown under it, and let more branches show through it), not out of a
+mass of leaves. Thrown back, it lodges in a fork of that branch.
+
 ### Figures that act
 
 - A figure drawn small (80-150 px tall) at 1x loses its face: draw it at 3x and filter it down, with the face designed
@@ -517,6 +521,11 @@ and the landing to their words.
 - A throw gets 3-4 frames of anticipation (a reach back) before it, and two in-betweens wherever a hand would jump
   more than a few px in a frame. A jump's first airborne frame that lifts 50 px reads as a pop: ease the take-off over
   3-4 frames.
+- A child tosses something up with both hands: both arms swing up together from beside the legs, in front of the
+  chest, to above the head, and stay up after the release; whenever the child holds the object, both hands hold it. No
+  arm passes behind the torso in any frame: a one-armed throw wound back behind the body reads as a broken arm.
+- One table of limb proportions for every figure in the film (a child's upper arm about 0.15 of its height, the
+  forearm 0.14), shared by every scene's rig: limbs set by hand in one scene read as too long.
 - A child needs a neck (a short one, the head turned 20-30 degrees toward the body); a chin on the shirt reads as
   hunched or sad.
 - Draw a pose with asymmetry and overlap. Both arms set from one rig with mirrored values (straight, parallel, the
@@ -635,9 +644,9 @@ for (const [x, y] of [[-ox, -oy], [W - ox, -oy], [-ox, H - oy], [W - ox, H - oy]
 - A two-bone IK that picks "the outer side" flips the elbow in one frame (60-90 px) when the hand passes its shoulder
   or the horizontal. Solve it in 3D with a pole (out, down, back) and a hand depth near the shoulder, or let the elbow
   change side only while the arm is straight; audit every joint's step per frame, not only the hand's.
-- To carry a hand from one side of the head to the other (a throw that becomes a reach), swing the arm down through
-  the bottom, straight, and change the elbow's side there; for the frames the side is fractional the elbow reads as
-  coming toward us, so keep them few.
+- A throw that becomes a reach keeps the arm up: the follow-through settles at the top and the arm stays raised.
+  Swinging it down past the hip and back up across the chest to change the elbow's side reads as the arm going round
+  through the back, a broken arm. If the elbow must change side, change it while the arm is straight overhead.
 - Both arms raised overhead on a child with a big head (arms shorter than head and neck) cross the face if only the
   arms move: lift the shoulders 10-20 % of the arm's length as the arms go up and tip the head back to look up; the
   hands then clear the top of the head. A follow-through that keeps the release's rate and settles at a top is an
@@ -698,6 +707,14 @@ for (const [x, y] of [[-ox, -oy], [W - ox, -oy], [-ox, H - oy], [W - ox, H - oy]
 - Lowering a shoulder's root does not keep an IK elbow off the head: with the bend side fixed, a raised target swings
   the elbow toward it. Audit the elbow's distance from the head every frame, and route the hand's keys out behind.
 - Scratch art reverses engraving: crowding scratches toward the shade lightens it; thin them there instead.
+- A scratched globe left mostly black on its shade side reads unfinished ("incomplete and poor"). Scratch the night
+  side too, at nearly the lit side's line density (a floor of 0.9) with thinner strokes, so the land and sea read all
+  the way round. It took the black share of the shade third from 55 % to 30 %.
+- Stitches sewn round a figure (a hug drawn as thread) read as ropes tying it up, more so the thicker they are. Keep
+  the thread fine (about 3.5 px at 1080p; 6-7 px reads as rope), sew it on the word, fade it after, and let the
+  gesture carry the hug: the arms tighten a few px and the figure presses into the felt.
+- A coloured-pencil sea hatched in long strokes with gaps between them reads as pale streaks. Lay short strokes that
+  overlap at 0.8x their width (22-24 px long, ±6°), denser than the land's.
 - A composition note on a scene whose motion is physics (a small Earth on its orbit in an empty frame) is answered by
   the camera, not by moving the object: push in after the action, hold, pull back to reveal what comes next (the Sun),
   at 1x at both cuts so the passages hold. Draw through the camera's transform, check the extremes stay in frame, and
