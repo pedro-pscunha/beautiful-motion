@@ -28,7 +28,7 @@ out of git (`.gitignore`) before anything is committed.
 | Generated images, another provider | `OPENAI_API_KEY`, `GEMINI_API_KEY`, `FAL_KEY`, `REPLICATE_API_TOKEN` | OpenAI, Google (Imagen), fal, Replicate | as above |
 | Voiceover | `ELEVENLABS_API_KEY` | ElevenLabs (text to speech; billed by characters or credits) | the user records it (a phone in a quiet room, WAV) |
 | Voiceover, another provider | through Higgsfield's API: `HF_API_KEY` + `HF_API_SECRET`; through its app: none (the user hands over the file) | Higgsfield (its Eleven voices, Seed Speech) | as above |
-| Music | `ELEVENLABS_API_KEY` | ElevenLabs Music (`model_id` `music_v2`, or newer; pass it, since the API default can still be v1) | a track the user owns or licenses; Pixabay Music, the YouTube Audio Library |
+| Music | `ELEVENLABS_API_KEY` | ElevenLabs Music (`model_id` `music_v2_5`, the best in 2026-10, or `music_v2`; pass it, since the API default can still be v1) | a track the user owns or licenses; Pixabay Music, the YouTube Audio Library |
 | Music, another provider | Higgsfield through its API: `HF_API_KEY` + `HF_API_SECRET` (an MCP server keeps its own credentials, in the agent's setup); Higgsfield's app and Suno: none (the user hands over the file) | Higgsfield (Seed Audio), Suno (no public API) | as above |
 | Sound effects, foley | `ELEVENLABS_API_KEY` (sound generation), `FREESOUND_API_KEY` | ElevenLabs, Freesound | recordings the user makes; Freesound CC0 sounds downloaded by hand |
 
@@ -36,9 +36,24 @@ No generated video: this method draws the motion in code. A user's own footage c
 (`craft.md`, "Plates").
 
 Notes:
-- ElevenLabs Music v2 builds a piece from a composition plan of sections and can regenerate one section and keep the
-  rest (inpainting): the right tool for "change only the ending". Ask for instrumental music (no vocals) under a
-  voiceover. Its terms clear generated tracks for commercial use; record the model and date anyway.
+- ElevenLabs Music builds a piece from a composition plan of chunks. It can also keep slices of an uploaded track and
+  generate new chunks around them (inpainting), but in a test the kept slices came back re-synthesised (shifted by tens
+  of ms) and the new chunks did not keep the chords asked for: measure both before you rely on it to change only an
+  ending. Ask for instrumental music (no vocals) under a voiceover. Its terms clear generated tracks for commercial
+  use; record the model and date anyway.
+- ElevenLabs Music 2.5: `POST https://api.elevenlabs.io/v1/music?output_format=pcm_48000` with the body
+  `{"model_id": "music_v2_5", "seed": 2, "composition_plan": {"chunks": [...]}}`, each chunk
+  `{"text": "[Intro]", "duration_ms": 10746, "positive_styles": [...], "negative_styles": [...]}` and 3-120 s long. The
+  response is raw 16-bit stereo PCM: wrap it in a WAV header (Python's `wave` module) to keep it lossless. The key needs
+  the Music Generation permission (HTTP 401 "missing the permission music_generation" when it is off). About 26.5
+  credits a second (86 s: about 2,280 a take). Takes differ by seed in how well they hold the tempo you ask for: make
+  two and keep the one `sound.md`'s grid check passes. Put the tempo and the meter ("67 BPM, steady tempo", "3/4
+  time") in every chunk's positive styles and "tempo changes", "ritardando", "rubato", "silence" and "fade in" among
+  its negatives. A classical-piano style asked for "strict steady tempo" still played rubato (108-117 BPM wandering);
+  "metronomic strict tempo, every bar exactly the same length" with accelerando, free time, ad libitum, cadenza,
+  fermata and pauses as negatives held on two seeds. A cinematic style may open with several bars of free time before
+  the beat. The account's credit counter can lag a call (one call's charge showed only after the next), and other work
+  on the same account spends from the same total: log each call's own cost, never the change in the account's total.
 - Higgsfield's Seed Audio makes music, or a whole scene of voice, music and effects in one pass. For a film you mix
   yourself, ask it for the music alone, so the voice and effects stay separate and measurable. An agent with the
   Higgsfield MCP connected can call it directly; otherwise the user generates it and hands over the file.

@@ -101,5 +101,12 @@ Give every image input its own `-framerate`, equal to the film's, or the vertica
 
 ## Versions
 
-Every change is a new version (`film-v12.mp4`); never overwrite a version the user has seen. Keep a short notes file per
-version: what changed and why, what was measured, what was not checked.
+Every change is a new version (`film-v12.mp4`); never overwrite a version the user has seen, and count every file in
+`out/` as seen, sent or not. Once the new version is delivered, the older ones are deleted from disk (SKILL.md,
+Conventions: keep only the latest version), unless the user asks to keep them. Keep a short notes file per version: what changed and why, what was measured, what was
+not checked.
+
+Several cuts of one picture (with and without the music, one per soundtrack) share the version number and differ by a
+suffix (`film-v6-voice-sfx.mp4`, `film-v6-waltz.mp4`). Mux each from the same `picture.mp4` with its own mix, each mix
+through its own loudness search and voice check (`sound.md`), verify each delivered file, and list them all in one
+checksum file.

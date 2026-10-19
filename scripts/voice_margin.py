@@ -4,17 +4,18 @@
 # dependencies = ["numpy", "soundfile", "scipy"]
 # ///
 """Is the voice clear on every line? The speech band (300 Hz-8 kHz, mono) of the voice against everything else, per
-line and over 200 ms windows, in dB.
-usage: uv run <skill>/scripts/voice_margin.py <voice.wav> <rest.wav> <lines.json> [--min 8]
-       uv run <skill>/scripts/voice_margin.py <voice.wav> --mix <mix.wav> <lines.json> [--min 8]
+line and over short windows (200 ms; --window sets another length in seconds), in dB.
+usage: uv run <skill>/scripts/voice_margin.py <voice.wav> <rest.wav> <lines.json> [--min 8] [--window 0.2]
+       uv run <skill>/scripts/voice_margin.py <voice.wav> --mix <mix.wav> <lines.json> [--min 8] [--window 0.2]
 voice.wav: the voice alone at its level in the mix; rest.wav: everything else (music, effects) at its level. --mix
 takes rest = mix - voice: valid only when voice.wav went through the same master chain as mix.wav, sample-aligned
 (otherwise voice is left in the rest and the margins read low).
 lines.json: [{"text": "...", "start": 1.20, "end": 3.45}, ...], seconds on the film's clock.
 A line the audio does not reach (a mix cut short) is LOW too.
-Per line: whole (over the line's span) and worst (the weakest 200 ms window where the voice is within 12 dB of its
-loudest window, so pauses do not count). A line is LOW when whole is under --min (exit 1); a worst window under --min
-is flagged "weak": a word the music or effects may mask there (duck or thin the bed at that time)."""
+Per line: whole (over the line's span) and worst (the weakest window where the voice is within 12 dB of its loudest
+window, so pauses do not count). A line is LOW when whole is under --min (exit 1); a worst window under --min is
+flagged "weak": a word the music or effects may mask there (duck or thin the bed at that time). 200 ms windows hide a
+single syllable masked by a music note's onset: --window 0.05 finds it."""
 import json
 import sys
 
@@ -36,8 +37,8 @@ def opt(name, default=None):
     return default
 
 
-mix, floor = opt('mix'), float(opt('min', '8'))
-if len(a) != (2 if mix else 3):
+mix, floor, win = opt('mix'), float(opt('min', '8')), float(opt('window', '0.2'))
+if len(a) != (2 if mix else 3) or win <= 0:
     sys.exit(__doc__)
 voice_p, other_p, lines_p = (a[0], mix, a[1]) if mix else a
 v, sr = sf.read(voice_p, always_2d=True)
@@ -65,7 +66,7 @@ def db(x):
     return 20 * np.log10(np.sqrt(np.mean(x ** 2)) + 1e-12)
 
 
-w, low = int(0.2 * sr), 0
+w, low = int(win * sr), 0
 for k, ln in enumerate(json.load(open(lines_p, encoding='utf-8'))):
     s, e = int(ln['start'] * sr), int(ln['end'] * sr)
     if e > n:  # a line the audio does not reach to its end is a failure: the mix was cut short (check its -t)
@@ -74,7 +75,7 @@ for k, ln in enumerate(json.load(open(lines_p, encoding='utf-8'))):
               f" does  {ln.get('text', '')[:48]}")
         continue
     if e - s < w:
-        print(f"{k + 1:>3}  {ln['start']:7.2f}-{ln['end']:7.2f} s  under 200 ms: not measured  {ln.get('text', '')[:48]}")
+        print(f"{k + 1:>3}  {ln['start']:7.2f}-{ln['end']:7.2f} s  under {win * 1000:g} ms: not measured  {ln.get('text', '')[:48]}")
         continue
     whole = db(bv[s:e]) - db(bo[s:e])
     wins = [(i, db(bv[i:i + w]), db(bo[i:i + w])) for i in range(s, e - w + 1, w)]

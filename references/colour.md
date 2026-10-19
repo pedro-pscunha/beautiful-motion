@@ -50,7 +50,12 @@ starting point for the look. The stills then test them on the material.
 6. **A world with several places** (a storybook) can give each place its own combination for its sky, light and
    clothes, over one shared combination for the ground. Keep it to those two per shot: the shared ground makes the
    places one world.
-7. **A colour-dictionary plate is optional.** It shows "Wada nº 124" with its swatches, set like a page of the book.
+7. **A recurring object can keep one colour across the film**, the one exception besides the neutrals: the same apple
+   in every scene, like a figure's black hair, keeps one red (in Lab within a few units of one lightness, chroma and
+   hue), and only its material changes. Taken from each shot's combination instead, it went crimson in some shots and
+   vermilion in others (hue 20-23 against 38-39), and read as different apples. Its highlights and shadows may use the
+   shot's own colours.
+8. **A colour-dictionary plate is optional.** It shows "Wada nº 124" with its swatches, set like a page of the book.
    Use it once, as an end card or in a closing grid. On every shot it reads as a caption over the picture.
 
 ## Picking: filter by numbers, then judge on the material
@@ -78,6 +83,12 @@ The numbers narrow the choice; only the material decides it.
    swatches flatten every colour into a flat chip, and materials change colour. Wax lets the paper through, glass
    glows, stone and grout grey a palette by a step, thread shines.
 3. **Choose by what the material does to the colours**, then write the number in the code.
+4. **Measure the frames against it**, since a critic will:
+   `uv run <skill>/scripts/chord_audit.py <frame.png> <#hex> [#hex ...]`, with the combination's hexes (plus a
+   recurring object's constant colour). It prints the share of the coloured pixels near each colour and the share off
+   the combination, clustered by hue and place. Thin blends at the edges between two of its colours are normal (0.1 to
+   3 % of the frame across one film's scenes, all of them blends); a cluster (a leaf, a sea, a thread) is a stray to
+   recolour.
 
 ## Worked examples: why a combination fails on one material and works on another
 

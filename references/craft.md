@@ -35,6 +35,21 @@ what lets you re-render one shot, compare two versions frame by frame, and splic
 - A preview loop (to watch the page in a browser) must not run under the renderer: guard it with
   `if (!navigator.webdriver)`, as the starter does. The renderer fails if the page calls `renderFrame` on its own
   during a render, because an async frame sharing a scratch canvas with the loop gets the loop's pixels.
+- A new scene in front of a film already timed (an opening added after delivery): never shift every time in the page.
+  Keep its clock (the old first cut = 0) and give the new scene a whole, even number of frames `P` before it:
+  `renderFrame(T)` takes `t = (Math.round(T * fps) - P) / fps` (exactly the old `f / fps`, so each old frame renders
+  bit-identical; an even `P` keeps the on-2s parity) and draws the new scene for `t < 0` on its own clock. Lay the audio
+  the same way: the old files untouched, the new scene's in its own file, a script writing the film-time copies.
+  Check that frame `P + n` of the new export equals old frame `n` (max difference 0). If the page's scene files share
+  one global scope, the new file keeps its names inside an IIFE: a `const` another file also declares breaks the page.
+- An ending added after the film was timed (a fade to black): add whole frames after the last scene's last frame and
+  let that scene draw on past its `dur` (keep `dur` itself, or every earlier frame changes; check the scene lives
+  there, with nothing frozen or starting), hold its last word through, and fade in `renderFrame` after the finish.
+  Give the audio clock the same frame count, and check the old frames still match (max difference 0). On a film with a
+  grid, make the ending one bar (65 frames at 67 BPM in 3/4), so a score made to the new length rings out under it: a
+  55-frame smoothstep fade (a black `fillRect` at that alpha) and 10 frames of black read right to most graders (one
+  wanted a full second of black). Check the scene still lives under the fade: divide the fade out of each frame and
+  every frame must still change.
 - WebGL: create one GL canvas once, render into it, then `drawImage` it into the canvas you are given. A new GL context
   per frame recompiles every shader and runs into the browser's limit of about 16 live contexts.
 

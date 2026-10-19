@@ -24,8 +24,11 @@ const smoothstep = (a, b, x) => { const u = clamp((x - a) / (b - a)); return u *
   (`sheet.py --cell 390`), and check each subject is recognisable as itself: a sunflower needs its anatomy (a dark
   seed head in spirals, petals, bracts, rough leaves) before it reads as one.
 - No text in a shot: not asemic "lettering", not numerals, not a crayon loop that reads as a cursive e or l. Use
-  ornament, coils or hatching. No prop that reads as something else: a hand stamp's carved potato read as an egg, and
-  French knots read as beads. Let the work appear by itself, or use a motif native to the craft.
+  ornament, coils or hatching. No mark or prop that reads as something else: a hand stamp's carved potato read as an
+  egg, French knots as beads, an ear drawn as a ring and a dot as a third eye, a highlight drawn as a closed loop as a
+  "2", a forked twig as a "Y", round dabs above a ridge as birds, wide blobs on two trunk ticks as sheep, a medallion of
+  rays as a sun (a false reading in a film about falling things). Let the work appear by itself, or use a motif
+  native to the craft.
 - What reads digital: a flat fill, a perfect circle, one texture stamped many times, a Voronoi diagram, a vector edge,
   Gaussian-blur shading, CG light wedges, mesh-like hatching, geometric facets lit by a key light. When a material
   reads digital at 1:1, find the tell and draw it the way the material is made.
@@ -209,7 +212,41 @@ function lead(g, paths, w, L) {                     // L = keyLight(t)
     bisque and crazing on the whites, and its own small tilt, so a moving light runs glints across the wall.
   - Mortar and grout are neutrals with grit, darker while wet. A wet floor dries in a slow front, and while it is wet
     a highlight slides over every dome.
-- Tell: a Voronoi diagram; identical tiles; a grid.
+- Press, never fade: each shard opaque from its first frame, a hair large, a few px off and tilted in the fingers, with
+  a cast shadow on the wet bed, pushed home flat over about 0.2 s. A 3-frame fade-in reads as an effect, not a hand.
+  Plain opaque presses gave 60 frames with one-frame pops in a 2 s build; the tilt, the notched trowel and the lumps
+  brought them to 10. Shading a shard's glaze toward the bed's tone for its first frames softens the step too (with
+  the shading at 70 %, 14 frames popped; at 30 %, 29), but on a figure that much reads as a pale ghost: keep the
+  figure's pieces under about 25 %.
+- The bed: lay the wet mortar in trowel passes, bands about 90 px deep outward from the nearest object, each pass a
+  few strokes with a raw, bulged leading edge (a notched trowel on fast runs, daubed lumps on domes), each band done
+  before its first shard; dry each joint after its shard is home. A threshold on noise lays it as islands ahead of
+  the front, and a bed that arrives after its shard shows the shard floating. A figure in shards gets its own bed on
+  bare paper, left clear from the start (no wall shards under it), laid in a few opaque strokes, then its rows, so the
+  field never shows through it.
+- The fall: break the wall into lumps of a few cells that keep their joints, with a darker raw edge where they part
+  and crumbs, so the mortar falls with its shards instead of fading. A piece that leaves its bed leaves a broken edge
+  and crumbs behind, not a clean die-cut hole.
+- Tell: a Voronoi diagram (crazing too); identical tiles; a grid; a bed laid in even stripes or shaded like an
+  airbrush.
+
+### Maps and the real Earth
+
+- Real coastlines (Natural Earth, public domain) read as our planet at a child's glance; invented blobs do not. Keep
+  them as data, simplified (Douglas-Peucker, small islands dropped, a few thousand points), in a page file with the
+  source, version and licence at its top, written by a tool from the download; parse the download, never run it.
+- Natural Earth's land joins Africa to Eurasia and the two Americas in one ring: cut them at Suez and Panama before a
+  continent can be its own piece or projected alone.
+- A field-driven drawing (passes that read a land field by thresholds) takes the real shapes when the field becomes
+  the signed distance to the real coast, scaled to the old field's slope at the coast: every tuned threshold keeps
+  its meaning. Bake it once in init; never project per pixel per frame.
+- A whole globe: an orthographic view on the drawing's own axis (the Atlantic facing is the classic). The top of a
+  huge Earth, seen close: an orthographic view squashes the land at the rim, so lay an azimuthal equidistant map
+  centred below the rim and let the rim cut it like a horizon. Use one view for every whole Earth in the film, so they
+  read as one planet.
+- Figures standing round a globe's rim land where the view puts them, often on the sea. Find the real island nearest
+  under each foot (a scan of the rim against the data) and draw it large enough to stand on, a soft oval hugging the
+  rim, in the scene's own land passes: less visible than turning the globe or sliding the figures.
 
 ### Embroidery
 
@@ -409,7 +446,8 @@ function camBreath(t, e) {                          // e: 0..1
 ### Timing to the music
 
 - The music's measured downbeats are the clock: shot `i` starts on downbeat `i`, one shot per bar, an opening of one
-  or two bars. Measure the beats (`sound.md`); never assume a grid from the tempo.
+  or two bars. Measure the beats (`sound.md`); never assume a grid from the tempo. A film put on a fixed grid before
+  its music (`sound.md`) keeps that grid as its clock, and each soundtrack is measured and laid onto it.
 - Give a shot the time its line needs: a voice line plays over its own image, never spilling onto the next.
 - A shot's arrival starts a little before its downbeat (about 0.17 s), so the transition is about two thirds done on
   the beat.
@@ -457,6 +495,33 @@ function soakField(cut, shape, N = 320) {
 - After any reorder, compare every cut window: a cut from a light shot into one whose build starts dark in the middle
   flashes light, dark, light. Choose a different neighbour.
 
+### Passing on a fall
+
+A film with one travelling object (an apple through every scene) can pass between scenes on its flight: the figure
+tosses it up, it slows and leaves through the top, the cut lands on its apex, and it falls into the next scene from
+above, on ½·g·t² the whole way. Where "down" is toward a globe's centre (a whole Earth in frame), leave through the top,
+so the object never seems to fall away from the Earth. Give each scene its own g, so a fall lasts about as long at
+every drawing's scale, and say honestly what that g is (about 0.56 of real g at those drawings' scale): the motion is
+a true fall, the scale is a convention. Time each toss so its apex lands exactly on the next cut, and key the catch
+and the landing to their words.
+
+### Figures that act
+
+- A figure drawn small (80-150 px tall) at 1x loses its face: draw it at 3x and filter it down, with the face designed
+  for the size it shows at. At phone size a figure under about 130 px reads as a dot; enlarge the figure, not the
+  object it holds (an object 0.5-0.8x the head's width).
+- Every object a figure holds sits in a drawn hand at the rig's hand point (a mitten with a thumb nub about 0.28x the
+  head's width in a child's drawing), never floating beside it.
+- Holds live: a breath, blinks every 2.5-4.5 s with both lids alike, a gaze that follows the object, a weight shift
+  or one gesture every 2 s or so, and a joy beat (a lean, a second bounce) alive to the last frame.
+- A throw gets 3-4 frames of anticipation (a reach back) before it, and two in-betweens wherever a hand would jump
+  more than a few px in a frame. A jump's first airborne frame that lifts 50 px reads as a pop: ease the take-off over
+  3-4 frames.
+- A child needs a neck (a short one, the head turned 20-30 degrees toward the body); a chin on the shirt reads as
+  hunched or sad.
+- Draw a pose with asymmetry and overlap. Both arms set from one rig with mirrored values (straight, parallel, the
+  hands side by side, the sleeves stacked) read as posed: one lower and bent, one reaching a little further.
+
 ### The many-into-one ending
 
 A catalogue can end by gathering every shot into one image and dividing it again. What made it read:
@@ -502,6 +567,12 @@ goes one way; a flicker goes back and forth) per 24 px tile and per pixel, at ev
 Intended grain or boil scores too, so judge a change against the previous export of the same window (`--vs`), not
 against zero. You cannot see flicker in stills.
 
+"It glitches sometimes" is usually a one-frame pop: a stroke laid whole in one frame, a pose that snaps, a boil
+redrawn over a whole figure, a cache rebuilt differently. Scan every export:
+`uv run <skill>/scripts/glitch_scan.py <frames> [from] [to] --cuts <cut frames>`. It lists each frame where a 48 px
+tile steps in that one frame (over 6 levels and over 3x its change on either side), with where. Compare a new export
+with the last one's list: no new pops, and every pop left is a cut or a contact you can name.
+
 ## The finish on the canvas
 
 One finish over every frame makes many techniques read as one body of work. Build each layer once; apply it in screen
@@ -529,6 +600,22 @@ for (const [x, y] of [[-ox, -oy], [W - ox, -oy], [-ox, H - oy], [W - ox, H - oy]
 
 ## Traps
 
+- Shutter blur from sub-frames spaced more than about 0.7 px apart ladders thin edges into stepped copies (a smile, a
+  paper edge), and reads as a glitch: use n = ceil(move / 0.7) sub-frames (cap 64), or draw stop-motion materials
+  (cut paper, felt, clay) crisp, with a drawn smear for a fast move. Check a 4x crop of the fastest frame.
+- A build that shows a patch's finished pixels the moment the tip passes is a one-frame pop: fade each stroke in over
+  about 3 frames behind the tip, ease every reveal in, and spread stroke starts so no tile gets several in one frame.
+  That is for drawn strokes: a placed piece (a shard, a clay lump, a paper cut) arrives opaque, and a fade reads as an
+  effect (see the stop-motion arrival below).
+- Blinks at an even pace (3 frames closing, 2 shut, 4 opening), both eyes on the same frames, never pop.
+- A cache that evicts a subject's rest drawing and rebuilds it later pops when the subject returns to rest: keep the
+  rest drawing as one fixed image.
+- Averaging many sub-frames with `lighter` in 8 bits loses the small shares: accumulate in groups of 8, then combine.
+- Revealing a baked layer through a stroke mask uncovers neighbouring strokes wherever the mask is wider than the
+  stroke: bake crumbs and dots on their own layer, and stop overlapping strokes short of each other.
+- A shared figure rig that turns the head centre with the body's lean but builds the eyes upright slides the eyes
+  across a head the scene rotates itself: draw every feature in the head's one transform.
+- A cue written as a time goes stale when the voice is re-laid: key every cue to its word (`wordT`).
 - A shared effect added over every shot can damage the ones that build themselves: a generic arrival glow drew a pale
   ghost of the subject before its build, and a lift-off shadow outlined a blank shape under prints, which have no
   relief. Give such shots an opt-out.
@@ -545,3 +632,93 @@ for (const [x, y] of [[-ox, -oy], [W - ox, -oy], [-ox, H - oy], [W - ox, H - oy]
   the frames that differ (`--from N --to M`), and splice them over the previous export.
 - A change in code can vanish before the final pixels (a wash multiplied onto paper, a light band too faint to move a
   grey level). Swap the constant for an extreme, render one still, and measure.
+- A two-bone IK that picks "the outer side" flips the elbow in one frame (60-90 px) when the hand passes its shoulder
+  or the horizontal. Solve it in 3D with a pole (out, down, back) and a hand depth near the shoulder, or let the elbow
+  change side only while the arm is straight; audit every joint's step per frame, not only the hand's.
+- To carry a hand from one side of the head to the other (a throw that becomes a reach), swing the arm down through
+  the bottom, straight, and change the elbow's side there; for the frames the side is fractional the elbow reads as
+  coming toward us, so keep them few.
+- Both arms raised overhead on a child with a big head (arms shorter than head and neck) cross the face if only the
+  arms move: lift the shoulders 10-20 % of the arm's length as the arms go up and tip the head back to look up; the
+  hands then clear the top of the head. A follow-through that keeps the release's rate and settles at a top is an
+  exponential with time constant (top - release angle) / rate; a Hermite with that start slope overshoots its top
+  whenever rate x duration > 3 x (top - release angle).
+- A far arm in a three-quarter view reads as coming out of the hip, the bottom or the back wherever its hand shows and
+  its forearm does not. Draw it behind everything but the far leg, with the torso, shorts and near leg cut out of it,
+  and audit every frame: a visible far hand needs its forearm visible (or the hand hidden too). Give the far hand a
+  natural job in every pose: beside the near hand on the ground, on the far rim of an object both hands hold.
+- A hand gripping something round and bigger than it (a child's hand on an apple) must stay the hand's size: four
+  fingers together over the object's near front spanning about one limb width, not spread round its rim, and the
+  thumb from lower on the rim, tilted up toward the fingertips (it opposes them), not lying flat or far away. A grip
+  drawn as angles round the object grows with the object; compute its span in limb widths.
+- Halving each joint angle of a kicked-out pose (thighs near vertical, shins out) narrows it into knock-knees. To open
+  a pose less, scale the foot's offset from the hip and keep each knee on the hip-to-foot line.
+- An outline traced off a raster starts wherever the trace began, so a line laid from a keyed index along it jumps
+  when the shape is redrawn: rotate the traced points to start at a point the rig fixes.
+- A cubic in-out ease peaks at 3x its mean speed, minimum jerk at 1.9x, smoothstep at 1.5x: a fast lift or a camera
+  move on the cubic reads as a jump. Use smoothstep or minimum jerk for those.
+- Additive height fields (clay) let a thick slab's edge print through a ball laid over it, a seam across a face. Lay
+  thick pieces with the max of the heights.
+- A cheap zoom blur: draw the frame once offscreen, then a binary cascade of two copies scaled about the zoom centre
+  per pass (2^n copies, ≤ 0.7 px apart at the far corner), and lay the sharp centre back: 16-20 ms a frame.
+- Blurring a whole jumping figure doubles its face. Give the body a shorter shutter and draw the head once, crisp, at
+  the frame's own time.
+- Chrome's canvas takes a variable font's optical size from the pixel size, so a big title gets the display cut's
+  hairlines. Load the face as its own `FontFace` with `variationSettings: "'opsz' 9"` (or the size you want) and wait
+  for it in `READY`.
+- A stroke routine fed a NaN width can loop forever (its run never advances) and hang the page with no error: treat a
+  non-finite width as a gap.
+- Scratch art: a ring scratched closed in one stroke leaves a black speck where its lift meets its start; run it on a
+  few px past the start. Where two scratches cross, the second dig goes down to the card and shows as a pale dot (a
+  "nose" on a face): dig a face's layer toward a tint of its own crayon.
+- Widening a scratched or revealed line at the same stylus speed raises each frame's reveal and the one-frame scan
+  flags it: keep the area revealed per frame, not the speed (a 3.8 px line at ≤ ≈ 33 px a frame).
+- An opaque stop-motion arrival (a clay lump slapped on) is a one-frame step on every tile it covers, so
+  `scripts/glitch_scan.py` flags each one by construction: list those frames as contacts, and judge them on a strip.
+- A feature swap (mouth, eyes, lids, a grip) done as a cross-fade reads as a ghost frame of both drawings: cut it in one
+  frame, or through one drawn in-between each way. A bare cut on a big shape can trip the one-frame scan; the
+  in-between fixes that too. A stop-motion change of state (a lumpy pile to a smooth ball) is never a dissolve either:
+  sweep it in under the tool's path (a thumb wipe), keeping some seams as creases.
+- A slow fade or swell over a large area that is still running in a hold quantises to one-level steps over the whole
+  area and raises fine flicker (1.5x measured): end it before the hold.
+- Detail finer than a pixel at 1x (fingerprint ridges) only shimmers as the figure breathes: fade it in with the
+  camera's zoom. Scratch art: the wax gives way ≈ 0.3 px beyond the stylus, so a black hairline needs ≈ 1 px nominal,
+  and features drawn over a hatched field (eyes, mouth) need a clean margin that moves with them.
+- A ground reserve drawn a pixel larger than a shape whose wash dries inward leaves a 1-2 px strip of bare paper round
+  every shape (a sticker's matte fringe). Run the ground 1-2 px under the shape's edge and let paper show only in a few
+  short breaks. Measure it: the luma across the edge must not rise above both sides.
+- Parts of one piece painted one by one show every part's rim, shade and lit sliver inside the union (a capsule
+  puppet). Paint the union once (nonzero paths with consistent windings), with lines only where one piece crosses in
+  front of another. A wash run past the ink onto a transparent sheet (a shutter's layer) multiplies over nothing and
+  leaves a pale fringe: stop it inside the ink's outer half.
+- Averaging shutter copies in an 8-bit canvas biases dark tones (each blend rounds down): average in
+  `getContext('2d', { colorType: 'float16' })`.
+- `in`/`xor`/`copy` compositing on a scratch canvas clears every pixel the canvas allows: clip it to the box you use, and
+  clear a few px wider, because a sub-rect `drawImage` under a scaled transform samples a pixel or two past the rect.
+- Lowering a shoulder's root does not keep an IK elbow off the head: with the bend side fixed, a raised target swings
+  the elbow toward it. Audit the elbow's distance from the head every frame, and route the hand's keys out behind.
+- Scratch art reverses engraving: crowding scratches toward the shade lightens it; thin them there instead.
+- A composition note on a scene whose motion is physics (a small Earth on its orbit in an empty frame) is answered by
+  the camera, not by moving the object: push in after the action, hold, pull back to reveal what comes next (the Sun),
+  at 1x at both cuts so the passages hold. Draw through the camera's transform, check the extremes stay in frame, and
+  keep the move out of the line that names the next action, or the frame's slide reads as the object moving.
+- A scratch canvas reused across frames keeps its state: an `imageSmoothingQuality` set on it for one frame changed a
+  rotated layer on the next (up to 17 levels, a frame that depended on history). Copy the frame context's smoothing
+  state onto the sheet each frame, and wrap your own settings in save/restore.
+- A CSS `filter = 'blur(...)'` on a full-frame scratch canvas costs about 35 ms a frame: bake the soft mask once (at 2x)
+  and draw it through the transform.
+- Scratch art: concentric rings on a face read as a target, and the black between them as features. Scratch a face in
+  one even direction (as a child fills a shape), a second pass between the strokes for the light, and keep a clean
+  black margin round each feature; audit every frame for black crossing a feature.
+- A shoe drawn as an oval in front of the leg leaves the shin's end showing at the heel or under the sole in some
+  poses: make the shoe one piece with a cuff round the ankle, end the shin inside it, and audit every leg-frame for shin
+  pixels outside the shoe.
+- An arm whose outline starts at the shoulder joint shows bare skin over the shoulder whenever the arm lifts: make each
+  sleeve a band round the shoulder joint and down the upper arm to the hem, a little wider than the arm, joined to the
+  shirt's top line, so the arm shows only out of the hem. Audit it every frame: bare upper-arm pixels above the hem
+  (count the upper arm only, and stop at the hem).
+- In pen and wash, a pen line across a limb at a sleeve's hem reads as a ring round the arm (closed, a washer; an open
+  C, still a bracelet), and a straight pen line across the shorts reads as a cut: stop the garment's own line at the
+  hem and let the paint's edge be the hem.
+- A hand blended from a world key (on an object) into a shoulder-relative key while the arm is near full reach and the
+  body moves pops the elbow: park the hand where the arm stays bent (on a knee) before the hand-over.

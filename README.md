@@ -53,8 +53,9 @@ call it tells you what it will cost and waits for your OK.
   the drawing and animation techniques (chalk, woodcut, stamp, stained glass, mosaic, embroidery, knitting, string art,
   watercolour and more; build then live, one clock, soak transitions), the render contract, sound, finishing, and
   reviews.
-- `scripts/`: the frame renderer, a dependency check, a Wada colour picker, a contact sheet, a fine film grain,
-  flicker, loudness and voice-margin measurements, and a tool that freezes a version for grading.
+- `scripts/`: the frame renderer, a dependency check, a Wada colour picker and a check of a frame against its
+  combination, a contact sheet, a fine film grain, flicker, one-frame pop, loudness and voice-margin measurements, and
+  a tool that freezes a version for grading.
 - `assets/`: a starter page that follows the render contract, and the `.env` template (`env.example`).
 
 To see the starter, open `assets/starter/index.html` in a browser; it plays in a loop.

@@ -19,6 +19,11 @@ critics with one lens each push the quality up in rounds.
 - Scratch goes in `<project>/.work/` (renders, logs, grading rounds), one folder per version (`.work/v1/`); what the
   user receives goes in `<project>/out/`. Add `.work/`, `.env` and `node_modules/` to `.gitignore`. Never keep state in
   a system temp folder: a reboot can wipe it.
+- Keep only the latest version on disk: once a new version is delivered, delete the older versions' frames, grain,
+  renders, candidate videos, intermediate mixes and scratch media, and the older deliverables; keep the sources, the
+  records (notes, rulings, grades, reports), the latest deliverable and whatever its build reads. Keep other versions
+  or branches only when the user asks. Every script goes in the project's tracked `tools/`, never in a version or
+  render folder, so the cleanup cannot take it.
 - Python scripts run as `uv run <skill>/scripts/<name>.py ...`: uv brings Python and each script's libraries (they are
   declared inside the script). Without uv: `python3` (Windows: `py`) and `pip install pillow numpy soundfile scipy`.
 - Commands here are written for bash/zsh. In Windows PowerShell 5.1 there is no `&&` (one command per line),
@@ -70,9 +75,9 @@ point the stills will test.
 
 Then, before starting, ask which resources they want to use, one answer per line ("none" is an answer):
 - **Music**: their own or a licensed track; a royalty-free library (Pixabay Music, the YouTube Audio Library, Freesound
-  CC0); generated with ElevenLabs Music (v2: a whole piece built section by section, and one section regenerated
-  without touching the rest), Higgsfield (Seed Audio, in the Higgsfield app or its MCP), or Suno (made by the user in
-  Suno's app: no public API); a score written in code (MIDI through an instrument they have); or silence.
+  CC0); generated with ElevenLabs Music (2.5: a whole piece built chunk by chunk to the shots, several styles on one
+  grid), Higgsfield (Seed Audio, in the Higgsfield app or its MCP), or Suno (made by the user in Suno's app: no public
+  API); a score written in code (MIDI through an instrument they have); or silence.
 - **Voiceover**: ElevenLabs, Higgsfield (its Eleven voices), their own recording, or none.
 - **Sound effects**: ElevenLabs sound generation, Freesound, their own recordings, or none.
 - **Generated images** (a paper texture, a painted backdrop): Higgsfield, OpenAI, Google, fal, Replicate; or everything
@@ -111,12 +116,14 @@ How to draw each material, build it, keep it alive, cut between materials and fi
 The picture is one HTML page that exposes `window.TIMELINE`, `window.renderFrame(t, canvas)` (a pure function of
 time) and, if it loads images or plates, `window.READY`. `render_frames.mjs` exports every frame as PNG
 (`--from N --to M` for a range, `--still t1,t2 out.png` for stills side by side) and fails loudly on a missing file, a
-font that did not load or a page error. Render each version into its own folder.
+font that did not load or a page error. Render each version into its own folder, and scan every export for one-frame
+pops (`scripts/glitch_scan.py`).
 
 ## Step 4: sound
 
-Voice first (it sets the timing), then music measured and aligned to the cut, then foley only where a hand works. Mix
-to the delivery loudness with the voice clear on every line (`voice_margin.py`, `loudness.py`). `references/sound.md`.
+Voice first (it sets the timing; put it on a fixed grid of bars when the music comes later), then music measured and
+aligned to the cut, then foley only where a hand works. Mix to the delivery loudness with the voice clear on every
+line (`voice_margin.py`, `loudness.py`). `references/sound.md`.
 
 ## Step 5: finish and deliver
 
@@ -153,22 +160,24 @@ as a separate pass, and say which.
 | `references/setup.md` | installing uv, Node, ffmpeg, Playwright and fonts on macOS, Windows, Linux, with the user |
 | `references/env.md` | the `.env` contract: providers and their variables, how to ask, cost, generated media |
 | `references/colour.md` | Sanzo Wada's colour book as the default palette: the book, the open data, the rules, picking, worked examples |
-| `references/techniques.md` | each material drawn in code, motion (build then live, one clock, camera breath, music, soaks, the ending, on 2s, flicker), the canvas finish, traps |
+| `references/techniques.md` | each material drawn in code (maps of the real Earth too), motion (build then live, one clock, camera breath, music, soaks, passing on a fall, figures that act, the ending, on 2s, flicker, pops), the canvas finish, traps |
 | `references/craft.md` | the render contract: the page's globals, determinism, caches, fonts, plates |
-| `references/sound.md` | voiceover, music, foley, the mix command, loudness, voice margins |
+| `references/sound.md` | voiceover, music (a fixed grid, generated music on it), foley, the mix command, loudness, voice margins, the intro, cuts with other soundtracks |
 | `references/finish.md` | encoding with colour tags, film grain, masters, mux, 9:16, verification, versions |
 | `references/review.md` | the quality bar; judge, adversarial reviewer, grading panel (roles, lenses, files, grade template, loop, lessons) |
 | `scripts/doctor.py` | dependency check with per-OS install commands |
 | `scripts/wada.py` | Wada's 348 combinations from the open data: show one by number, filter by hue, warm/cool, earth, dark, count |
+| `scripts/chord_audit.py` | how much of a frame's colour sits off its combination, and where |
 | `scripts/check_env.py` | which `.env` variables are set (never prints values) |
 | `scripts/render_frames.mjs` | export frames or stills from a page that follows the render contract |
 | `scripts/sheet.py` | numbered contact sheet from frames or stills |
 | `scripts/flicker.py` | flicker and shimmer per tile and per pixel, at 1s and 2s, and old against new |
+| `scripts/glitch_scan.py` | one-frame pops per 48 px tile in an export ("it glitches sometimes"), cuts skipped |
 | `scripts/grain.py` | fine film grain on exported frames, or on raw 16-bit frames streamed through it (`--raw`): luma only, by tone, one grain per drawing, deterministic |
 | `scripts/voice_track.py` | lay the voice lines onto one track from `lines.json` |
 | `scripts/levels.py` | RMS over time for several files side by side (ducking, the music's tail) |
 | `scripts/loudness.py` | integrated loudness and true peak of a file; two-pass normalisation |
-| `scripts/voice_margin.py` | the voice's speech-band margin over everything else, per line |
+| `scripts/voice_margin.py` | the voice's speech-band margin over everything else, per line (`--window 0.05` for single syllables) |
 | `scripts/freeze.py` | freeze a candidate folder (SHA256SUMS, read-only), check it, or print checksums |
 | `assets/env.example` | the variables, commented |
 | `assets/starter/index.html` | a minimal page that follows the render contract (copy it to start) |
