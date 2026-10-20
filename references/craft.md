@@ -51,7 +51,10 @@ what lets you re-render one shot, compare two versions frame by frame, and splic
   wanted a full second of black). Check the scene still lives under the fade: divide the fade out of each frame and
   every frame must still change.
 - WebGL: create one GL canvas once, render into it, then `drawImage` it into the canvas you are given. A new GL context
-  per frame recompiles every shader and runs into the browser's limit of about 16 live contexts.
+  per frame recompiles every shader and runs into the browser's limit of about 16 live contexts. Headless Chromium runs
+  WebGL2 on SwiftShader, deterministic, with `EXT_color_buffer_float` for RGBA16F targets: an oil-paint pass of about
+  25,000 instanced strokes into colour and height buffers at 2x, lit and averaged down, took 1.8-2.7 s a frame at
+  1920x1080.
 
 `<skill>/assets/starter/index.html` follows this contract (open it in a browser to watch it loop; `?t=2.5` holds a
 time). Copy it to start. Its sizes follow `W` and `H`, so a 9:16 film starts with `W = 1080, H = 1920`.

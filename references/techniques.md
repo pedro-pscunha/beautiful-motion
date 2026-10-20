@@ -616,6 +616,12 @@ for (const [x, y] of [[-ox, -oy], [W - ox, -oy], [-ox, H - oy], [W - ox, H - oy]
   about 3 frames behind the tip, ease every reveal in, and spread stroke starts so no tile gets several in one frame.
   That is for drawn strokes: a placed piece (a shard, a clay lump, a paper cut) arrives opaque, and a fade reads as an
   effect (see the stop-motion arrival below).
+- A stroke that grows from nothing starts at nothing: a round start cap drawn whole while the stroke's length is
+  still 0 is a dot in its first frame, and a word's strokes starting together pop their tiles. Run the reveal over the
+  caps too. Grow it evenly (a smoothstep over about 0.28 s), not mostly in its first frame (an ease-out).
+- A stroke carried through a flow keeps the colour it was born with. Coloured by where it is now, it flips colour in
+  one frame each time it crosses a band's edge (63 of 192 frames popped in an 8 s sky; none once coloured at birth).
+- An overlay switched on at any strength (a shadow, a glow) pops in its first frame: fade it in from 0.
 - Blinks at an even pace (3 frames closing, 2 shut, 4 opening), both eyes on the same frames, never pop.
 - A cache that evicts a subject's rest drawing and rebuilds it later pops when the subject returns to rest: keep the
   rest drawing as one fixed image.

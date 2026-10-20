@@ -12,6 +12,11 @@ The voice sets the timing of the film.
   the current docs for the model and its settings. Generate the whole script as one take with word timestamps and cut
   it into lines at the silences between words (one take keeps the performance even), or each line as its own file.
   Keep the delivery even: no whispering or style effects on single lines unless the brief asks.
+- Measure a short read before you choose it, since you cannot hear it: its pitch over the words (`librosa.pyin`) and
+  its last word against the rest. A short title read with its last word falling 9.7 semitones and 5.9 dB under the
+  rest was heard as "not good"; the next takes kept the title up. `eleven_v4` takes no audio tags; `eleven_v3` does
+  (`[warmly] Once upon a time... [excited] the sea!`). Check every take's words with speech-to-text (`scribe_v2`), so
+  no tag was spoken.
 - Place each line on its own shot, starting a beat after the cut and ending before the next one. The timings live in
   one file, `<project>/audio/lines.json`, read by `voice_track.py`, `voice_margin.py` and the captions:
   `[{"text": "The sun comes up.", "file": "audio/lines/01.wav", "start": 2.05, "end": 3.13}, ...]` (seconds on the
@@ -56,6 +61,10 @@ which float keeps and normalisation brings down, where 16- or 24-bit would clip 
   music's chroma novelty within 60 ms of the cuts: the right one peaks there (on a take whose shift its bass had
   already given, it picked the same one). Track a double-time take from its own tempo: from the grid's it reads 300+ ms
   of false drift.
+- Name no artist or composer in an ElevenLabs Music plan ("in the manner of Joe Hisaishi", a guitarist, an architect's
+  city): five plans that did came back HTTP 400 `copyrighted_material_detected` (no charge), though earlier plans with
+  names had passed. Describe the style itself ("a gentle hand-drawn animated film score", "a romantic Spanish classical
+  guitar").
 - When you write the score yourself (MIDI rendered through an instrument), keep each part's timing deterministic: if
   timing humanisation uses a random stream, give each part its own stream, so changing one part's ending does not move
   every other part's notes.
@@ -71,9 +80,22 @@ those, and for them loud enough to hear over the music (the level is in the mix 
 ones for realism; generated effects need cutting to the action and checking for clicks. Pitch nothing to the music's
 key unless you measured the key.
 
+- No constant effects bed (an 8 s loop of stirring paint under a whole piece): its repeating bursts read as a noise the
+  viewer asks to remove. Lay one effect per action, cut to it and panned to where it happens on screen.
+- Before you take a bed out, check what it covered: a music take moved earlier to land a chord can end before the
+  picture, and the bed hid the silence. Measure each take's end on the film's clock after its shift; if one stops
+  short, send its last chord into a reverb so it rings to the end.
+- Pick generated takes without hearing them: measure each one's energy per band and read a spectrogram sheet of all the
+  takes as an image. A "padded thud" came back as a 20 Hz pulse, under what a phone or a TV plays; an "air rush" was 73%
+  under 60 Hz; a "shimmer" was steady tones at 5-12 kHz; a "squelch" was a train of clicks. High-pass every take.
+- ElevenLabs sound generation can block a prompt that names a child ("a small child's palm pressing into wet paint":
+  HTTP 403 `request_blocked_due_to_moderation`, no charge); "a small open hand" passed.
+
 When someone else picks a new scene's foley gains, give them the film's own level, not a target peak: measure the
 laid foley track's loudest 50 ms RMS per scene, and check the new scene against its neighbours after you lay it. A
 builder who aimed main contacts at a "−10 dB peak" laid a scene 18 dB over the rest of the film.
+Set a short effect's gain from its peak or its 50 ms RMS, never from its integrated loudness: normalising a 1 s sound
+to a LUFS target lifts its peak past full scale.
 
 ## Mix
 
@@ -130,6 +152,9 @@ Then measure, in this order:
    then measure and adjust G (each step moves less than G, as the limiter takes part of it). A single-band
    limiter turns the whole sum down together, so step 1's margins still hold; `voice_margin.py` on the limited
    mix against the unlimited voice reports false negatives on every line (the limited voice counts as "the rest").
+   An ident of a few seconds: set its level by the voice line, at the films' line loudness (about -12.6 LUFS in their
+   -14 LUFS mixes), not the whole at -14 LUFS: in 8 s the music carries the integrated loudness, and lifting it that
+   far put the voice's peaks 9 dB into the limiter.
 3. The music runs to the end: `uv run <skill>/scripts/levels.py .work/v1/mix.wav audio/music.wav --every 1`. From
    one second after the last line to the end, the mix sits about the music's `volume` (10 dB here) under the music
    file; 20 dB or more under it means the music was cut. A row that reads "(ended)" for the mix before the film's
