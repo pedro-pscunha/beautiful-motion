@@ -80,7 +80,11 @@ second file wrong. Then join the video-only streams with the concat demuxer and 
 clip's mix, then the film's master or its decoded track) encoded once. Check that the film's frames still decode
 bit-identical (one frame's raw md5 at the start, the middle and the end) and that both streams start at 0. Before
 giving the clip a fade to black, measure the film's first frames (a 1x1 scale of a frame gives its mean): a film that
-opens on white then cuts from black straight to white.
+opens on white then cuts from black straight to white. To fade such an opening up from black, re-encode only
+the film's frames up to its second keyframe (`ffprobe -skip_frame nokey -show_entries frame=pts_time`) and copy
+the rest (`-c copy -f segment -segment_frames <k>`). Keep the film's CRF for them: the PPS stores an initial QP taken
+from it, so another CRF breaks the stream copy; raise their quality with an x264 zone instead
+(`-x264-params zones=0,<k-1>,b=4`: 48 dB PSNR against the source, where the plain CRF gave 40).
 
 ## 9:16 from a square or 16:9 film
 
