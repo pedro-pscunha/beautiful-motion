@@ -428,6 +428,10 @@ const turn = (t) => -Math.PI / 2 + TURN_PHI + TURN_W * (t - TURN_SWELL * (0.62 /
   stitches sliding over cloth).
 - A subject that turns with its ground reads as still. Measure each shot: the subject's angle against the frame's
   corners, not against its ground.
+- To lengthen a finished piece (a fade out, a tail), keep every eased move on the old length's clock (a `MOTION`
+  constant for the turn and the zoom) and run only the timeline past it, with anything integrated per frame (a flow's
+  paths) extended to the new length: the approved seconds then render byte-identical (check two frames), and the
+  extra time lives (the flow goes on) instead of slowing every move down.
 
 ### The camera breath
 

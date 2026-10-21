@@ -72,6 +72,16 @@ ffmpeg -i .work/v1/picture.mp4 -i .work/v1/mix-final.wav -map 0:v:0 -map 1:a:0 -
 A silent film needs no mux (copy `picture.mp4`). If a platform refuses a file with no audio track, add silence:
 `-f lavfi -i anullsrc=r=48000:cl=stereo` as the second input, with the same command.
 
+An ident (or any clip) in front of a delivered film, without re-encoding the film: read the film's encoder settings
+(`strings film.mp4 | grep -o "x264 - core.*"`), encode the clip from its frames with the same ones (preset, tune, CRF,
+profile, level, the colour tags), and check the two `avcC` headers match byte for byte
+(`ffprobe -select_streams v:0 -show_entries stream=extradata -show_data`, compared by hash); a mismatch decodes the
+second file wrong. Then join the video-only streams with the concat demuxer and `-c copy`, and the audio as PCM (the
+clip's mix, then the film's master or its decoded track) encoded once. Check that the film's frames still decode
+bit-identical (one frame's raw md5 at the start, the middle and the end) and that both streams start at 0. Before
+giving the clip a fade to black, measure the film's first frames (a 1x1 scale of a frame gives its mean): a film that
+opens on white then cuts from black straight to white.
+
 ## 9:16 from a square or 16:9 film
 
 Do not just crop: the film full width on a page of the film's own tone, and the words as captions in the empty band,
