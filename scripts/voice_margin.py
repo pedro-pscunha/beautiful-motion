@@ -47,7 +47,7 @@ if sr != sr2:
     sys.exit(f'{voice_p} is {sr} Hz and {other_p} is {sr2} Hz: render both at the same rate')
 n = min(len(v), len(o))
 clipped = int((np.abs(o[:n]) >= 0.9999).sum())
-if clipped:
+if clipped and sf.info(other_p).subtype not in ('FLOAT', 'DOUBLE'):  # a float file keeps what goes over: no clip
     print(f'warning: {clipped} samples of {other_p} sit at full scale: it is probably clipped (write mixes as 32-bit '
           'float, pcm_f32le)')
 v, o = v[:n].mean(axis=1), o[:n].mean(axis=1)

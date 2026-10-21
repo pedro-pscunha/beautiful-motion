@@ -334,6 +334,12 @@ function thread(g, a, b, col, w) {                  // nail a to nail b, light f
   pressure falling along the stroke); where the painter reloads, it lands again in a fresh, wet pool. The wet paint
   glistens and dries matte in the order it was laid.
 - Tell: a stroke of constant width and constant opacity.
+- Oil and impasto: paint never moves once it is on the canvas. A form that spins or flies into place reads as an
+  effect, not as painting (a viewer asked for it out). Paint it in a painter's order with the subject still: a few
+  broad strokes of the base colour, then the masses, then the detail. Lay each small stroke as a brush passes over it:
+  rows a brush wide, one way then back, the brush slow at a row's ends (smoothstep's inverse gives each stroke its time
+  from its place along the row). Set the subject moving only once it is painted. A letter: one brush along its stems,
+  from its top left on to the stroke that carries the last one on.
 
 ### The child's drawing
 
@@ -516,6 +522,11 @@ mass of leaves. Thrown back, it lodges in a fork of that branch.
   object it holds (an object 0.5-0.8x the head's width).
 - Every object a figure holds sits in a drawn hand at the rig's hand point (a mitten with a thumb nub about 0.28x the
   head's width in a child's drawing), never floating beside it.
+- An open hand or a handprint from signed-distance shapes: a square palm wider than the fingers, a heel as wide as the
+  knuckles and a thumb capsule out of the palm's middle read as "too fat, not a human hand". Keep the palm no wider than
+  the knuckle line and narrow it to the heel (a rounded trapezoid, its sides eased out a little), the heel's two pads
+  inside it with a dip between them, and the thumb a cone thicker at its base, out of a mound low on the thumb side,
+  rising 35-40 degrees from vertical. Iterate the bare silhouette (the field on a grid, seconds a try) before a render.
 - Holds live: a breath, blinks every 2.5-4.5 s with both lids alike, a gaze that follows the object, a weight shift
   or one gesture every 2 s or so, and a joy beat (a lean, a second bounce) alive to the last frame.
 - A throw gets 3-4 frames of anticipation (a reach back) before it, and two in-betweens wherever a hand would jump
@@ -530,6 +541,10 @@ mass of leaves. Thrown back, it lodges in a fork of that branch.
   hunched or sad.
 - Draw a pose with asymmetry and overlap. Both arms set from one rig with mirrored values (straight, parallel, the
   hands side by side, the sleeves stacked) read as posed: one lower and bent, one reaching a little further.
+- Stage a still within the figure's reach before it is approved: with that one proportion table a seated child's hand
+  reaches only about 250-300 px from the shoulder at 1080 px. Draw the reach circle on the still and put every object
+  the hand must touch inside it; a prop out of reach makes the animator restage the scene (a walk or a scoot in, an
+  object hidden in the lap).
 
 ### The many-into-one ending
 
@@ -580,7 +595,8 @@ against zero. You cannot see flicker in stills.
 redrawn over a whole figure, a cache rebuilt differently. Scan every export:
 `uv run <skill>/scripts/glitch_scan.py <frames> [from] [to] --cuts <cut frames>`. It lists each frame where a 48 px
 tile steps in that one frame (over 6 levels and over 3x its change on either side), with where. Compare a new export
-with the last one's list: no new pops, and every pop left is a cut or a contact you can name.
+with the last one's list: no new pops, and every pop left is a cut or a contact you can name. It exits 1 whenever it
+lists a pop, so an export script under `set -e` stops there: log its status (`… && st=0 || st=$?`) and read the list.
 
 ## The finish on the canvas
 
@@ -622,6 +638,12 @@ for (const [x, y] of [[-ox, -oy], [W - ox, -oy], [-ox, H - oy], [W - ox, H - oy]
 - A stroke carried through a flow keeps the colour it was born with. Coloured by where it is now, it flips colour in
   one frame each time it crosses a band's edge (63 of 192 frames popped in an 8 s sky; none once coloured at birth).
 - An overlay switched on at any strength (a shadow, a glow) pops in its first frame: fade it in from 0.
+- A stroke's front runs over its round caps too, about (1 + 1.5 wid / len) len: a broad stroke (34 px by 110) revealed
+  in 0.24 s moved 42 px a frame and popped every 48 px tile it crossed. Keep a front under half a tile a frame, at a
+  near-even speed (half linear, half smoothstep).
+- Strokes laid one after another along a brush path start milliseconds apart from one line: a stem's 17 strokes laid
+  in 17 ms filled the tile at its top in one frame. Stagger each by up to a few tens of ms (fixed per stroke, so the
+  render stays the same) and grow it over about 0.36 s; small strokes grown in 0.13 s popped the same way.
 - Blinks at an even pace (3 frames closing, 2 shut, 4 opening), both eyes on the same frames, never pop.
 - A cache that evicts a subject's rest drawing and rebuilds it later pops when the subject returns to rest: keep the
   rest drawing as one fixed image.

@@ -17,12 +17,20 @@ The voice sets the timing of the film.
   rest was heard as "not good"; the next takes kept the title up. `eleven_v4` takes no audio tags; `eleven_v3` does
   (`[warmly] Once upon a time... [excited] the sea!`). Check every take's words with speech-to-text (`scribe_v2`), so
   no tag was spoken.
+- When the user rejects a reading, make the next set differ in kind, not by seed or tag alone: three takes of one
+  text with the same pause were heard as "really similar". Vary the model (`eleven_multilingual_v2`, `eleven_v3`,
+  `eleven_v3_conversational`, `eleven_v4`, `eleven_v4_turbo`), the punctuation (a period, an ellipsis, an
+  exclamation) and the context (`previous_text`/`next_text` on multilingual v2 shape a read without being spoken).
+  Send the picks voice only, all at one loudness (a gain into a limiter: a plain gain stops short on a peaky take),
+  each a numbered card with a caption that says how it differs, so the user answers with a number.
 - Place each line on its own shot, starting a beat after the cut and ending before the next one. The timings live in
   one file, `<project>/audio/lines.json`, read by `voice_track.py`, `voice_margin.py` and the captions:
   `[{"text": "The sun comes up.", "file": "audio/lines/01.wav", "start": 2.05, "end": 3.13}, ...]` (seconds on the
   film's clock).
 - The page takes its line and word times from a file a script writes from `lines.json`, never edited by hand, and
-  keys each cue to its word: a re-laid voice then moves every cue with it (`techniques.md`, traps).
+  keys each cue to its word: a re-laid voice then moves every cue with it (`techniques.md`, traps). Word times from
+  speech-to-text (`scribe_v2`, `timestamps_granularity=word`) ran 0.10-0.16 s after the onsets measured by hand on the
+  same take: fit the cue's lead once on a take you measured, then reuse it for the other takes.
 - A dry voice: no reverb; a gentle de-esser if the sibilants are hot; check the 6-16 kHz band for fizz.
 
 Lay the lines onto one voice track: `uv run <skill>/scripts/voice_track.py audio/lines.json audio/voice.wav`. It folds
@@ -146,12 +154,16 @@ Then measure, in this order:
 2. Loudness to the delivery target: `uv run <skill>/scripts/loudness.py .work/v1/mix.wav --normalize .work/v1/mix-final.wav`
    (-14 LUFS, -1.5 dBTP before the AAC encode; check the platform's own target). It says whether the gain was linear;
    a linear gain keeps the voice margins measured in step 1.
-   When it reports "dynamic: loudnorm compressed it" (a speech-led mix: the voice's syllables are its peaks), use a
+   When it reports "dynamic: loudnorm compressed it" (a speech-led mix: the voice's syllables are its peaks), or that
+   the true peak capped the gain short of the target (ffmpeg 9 caps a linear gain instead of compressing), use a
    static gain into a 5 ms true-peak limiter instead, the gain searched on the limited result until -14.0 LUFS:
    `ffmpeg -i mix.wav -af "volume=<G>dB,alimiter=limit=0.79:attack=5:release=80:level=false" mix-final.wav`,
    then measure and adjust G (each step moves less than G, as the limiter takes part of it). A single-band
    limiter turns the whole sum down together, so step 1's margins still hold; `voice_margin.py` on the limited
    mix against the unlimited voice reports false negatives on every line (the limited voice counts as "the rest").
+   To see how hard it works, compare the limited mix with the unlimited one at G, 10 ms windows, after removing
+   alimiter's delay (its attack, 5 ms = 240 samples at 48 kHz): unaligned, every onset reads as 15+ dB of reduction.
+   A peaky take can need 5 dB on one syllable where another needs 1.6: say so when you compare takes.
    An ident of a few seconds: set its level by the voice line, at the films' line loudness (about -12.6 LUFS in their
    -14 LUFS mixes), not the whole at -14 LUFS: in 8 s the music carries the integrated loudness, and lifting it that
    far put the voice's peaks 9 dB into the limiter.

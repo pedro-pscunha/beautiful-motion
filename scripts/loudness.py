@@ -7,8 +7,9 @@
 any file ffmpeg reads (mp4, wav, mp3) and needs no shell pipe, so it runs the same in bash and PowerShell.
 usage: uv run <skill>/scripts/loudness.py <file> [--target -14] [--tp -1]
        uv run <skill>/scripts/loudness.py <mix.wav> --normalize <out.wav> [--target -14] [--tp -1.5]
---normalize: two-pass loudnorm to the target, as a plain gain (linear) when the true peak allows it, else dynamic; it
-says which. Aim at -1.5 dBTP before an AAC encode, which adds a little peak. Exit 1 if the measured file is more than
+--normalize: two-pass loudnorm to the target as a plain gain (linear); it says when loudnorm compressed it instead
+(dynamic), and when the true peak capped the gain short of the target (ffmpeg 9 does that and still calls it linear).
+Aim at -1.5 dBTP before an AAC encode, which adds a little peak. Exit 1 if the measured file is more than
 0.5 LU off the target or its true peak is over --tp."""
 import json
 import re
@@ -75,4 +76,7 @@ i, lra, peak = measure(dst) if dst else (src_i, src_lra, src_peak)
 good = abs(i - target) <= 0.5 and peak <= tp
 print(f'{dst or src}: {i:.1f} LUFS integrated, LRA {lra:.1f} LU, true peak {peak:.1f} dBTP   '
       f"{'OK' if good else 'OFF'} (target {target:g} LUFS, peak at most {tp:g} dBTP)")
+if dst and kind == 'linear' and i < target - 0.5:
+    print(f'the true peak capped the gain {target - i:.1f} LU short of the target: put a limiter on the peaks first '
+          '(references/sound.md, the loudness step), then run this again')
 sys.exit(0 if good else 1)
